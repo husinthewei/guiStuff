@@ -290,9 +290,9 @@ class StatsPanel(wx.Panel):
         wx.Panel.__init__(self, parent=parent)
         self.sizer = None
     def AST(self, label="", func=None, szr=None):
-        if func and label:
-            label0 = label%("?")
-        elif func:
+        #if func and label:
+        #    label0 = label%("?")
+        if func:
             label0 = "-"
         else:
             label0 = label
@@ -303,6 +303,20 @@ class StatsPanel(wx.Panel):
             if not label: label = "%s"
             self.updatelist.append((statictext, label, func))
         return statictext
+
+    #def AST4F(self, func=[], szr=None):
+	#label = "-"
+	#statictext = wx.StaticText(self, label = label)     
+	#if szr is None: szr = self.sizer
+	#szr.Add(statictext)
+
+	#label = "%s%s%s%s"
+	#self.updatelist.append((statictext,label,func[0]))
+	#self.updatelist.append((statictext,label,func[1]))
+	#self.updatelist.append((statictext,label,func[2]))
+	#self.updatelist.append((statictext,label,func[3]))
+	#return statictext
+
     def UpdateValues(self):
         for statictext,format,func in self.updatelist:
             try:
@@ -364,6 +378,46 @@ class BasicStatsPanel(StatsPanel):
 	print("inClear")
         self.m.ClearNFail()
 
+#tabRWH
+#Stats Panel for MCU
+#I attempted to recreate the stat panels for the MRB, but I don't know what some of the
+#labels/functions do. I'm thinking that some are only for the MRB's, so I'll ignore them for now.
+
+#!According to the verilog, registers 4,5,6, and 7 control which LED's are always on
+#ngood, nbad
+
+#asdf
+class McuStatsPanel(StatsPanel):
+    def __init__(self, parent, model, tabnum, whichmcu):
+        StatsPanel.__init__(self, parent=parent, model=model, tabnum=tabnum)
+        self.sizer = wx.FlexGridSizer(16, 2, 7, 10)
+	self.mcu = whichmcu
+	m = self.m	
+	mcu = self.mcu
+
+	self.AST("runtime");		self.AST(func = m.GetRunTimeS);
+	self.AST("nfail");		self.AST(func = m.GetNFail1);
+	self.AST("0000");       	self.AST(func = mcu.r0000.rfmt);
+	self.AST("beef");		self.AST(func = mcu.rbeef.rfmt);
+	self.AST("dead");		self.AST(func = mcu.rdead.rfmt);
+	self.AST("uptime");		self.AST(func = mcu.s3uptime.rfmt);
+	self.AST("q0003");		self.AST(func = mcu.q0003.rfmt);
+	self.AST("q0005");		self.AST(func = mcu.q0005.rfmt);
+	
+	#self.AST("LED On"); 		self.AST(mcu.ledon_1.rfmt);
+	#func = [mcu.ledon_1.rfmt, mcu.ledon_2.rfmt, mcu.ledon_3.rfmt, mcu.ledon_4.rfmt]
+	#self.AST("LED On"); 		self.AST4F(func = func);
+
+	self.AST("bitslip");		self.AST(func = mcu.btslp.rfmt);
+	self.AST("loopback");		self.AST(func = mcu.lpbck.rfmt);	
+	self.AST("ncoinc");		self.AST(func = mcu.ncoinc);
+	self.AST("ntrig");		self.AST(func = mcu.ntrig);	
+
+	self.SetSizer(self.sizer)
+        self.timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.OnTimer, self.timer)
+        self.timer.Start(1000)
+
 class MrbStatsPanel(StatsPanel):
     def __init__(self, parent, model, tabnum, whichmrb):
         StatsPanel.__init__(self, parent=parent, model=model, tabnum=tabnum)
@@ -380,19 +434,20 @@ class MrbStatsPanel(StatsPanel):
 		     mrb.s3uptime.rfmt, mrb.q0003.rfmt, mrb.ledpatt.rfmt, 
 	             mrb.q0005.rfmt, mrb.dipsw.rfmt, mrb.ad9222up.rfmt, mrb.ad9287up.rfmt,
 		     mrb.drs4plllck.rfmt, mrb.drs4dtap.rfmt, mrb.rofifoflags.rfmt, 
-		     mrb.roframecount.rfmt, mrb.v5temp.rfmt, mrb.v5vccint.rfmt, mrb.srclkflip.rfmt]
+		     mrb.roframecount.rfmt, mrb.v5temp.rfmt, mrb.v5vccint.rfmt, 		     mrb.srclkflip.rfmt]
 
 	for i in range(len(labels)):
 	    self.AST(labels[i]);	self.AST(func = functions[i]);		
         self.AST("misaligncnt 0..9"); szr = wx.BoxSizer()
 	
 	#rwh3 4 lines dropped
-	functions =[self.mrb.misaligncnt0.rfmt,self.mrb.misaligncnt1.rfmt,self.mrb.misaligncnt2.rfmt,		 	        		    self.mrb.misaligncnt3.rfmt,self.mrb.misaligncnt4.rfmt,self.mrb.misaligncnt5.rfmt,
+	functions =		      [self.mrb.misaligncnt0.rfmt,self.mrb.misaligncnt1.rfmt,self.mrb.misaligncnt2.rfmt,		 	        		    self.mrb.misaligncnt3.rfmt,self.mrb.misaligncnt4.rfmt,self.mrb.misaligncnt5.rfmt,
 		    self.mrb.misaligncnt6.rfmt,self.mrb.misaligncnt7.rfmt,self.mrb.misaligncnt8.rfmt,
 		    self.mrb.misaligncnt9.rfmt] 
 
 	for i in range(len(functions)):
 	    self.AST(szr=szr, func= functions[i]); szr.Add((10,1))
+
         self.AST(szr=szr, func=self.mrb.misaligncnt9.rfmt)
         self.sizer.Add(szr)
         
@@ -1009,6 +1064,9 @@ class MainWindow(wx.Frame):
         tab = BasicStatsPanel(notebook, self.m, tabnum)
         notebook.AddPage(tab, "basic")
         tabnum += 1
+	tab = McuStatsPanel(notebook, self.m, tabnum, self.m.mcu)
+	notebook.AddPage(tab, "mcu")
+	tabnum += 1
         tab = MrbStatsPanel(notebook, self.m, tabnum, self.m.mrb2)
         notebook.AddPage(tab, "mrb2")
         tabnum += 1

@@ -341,6 +341,11 @@ class Reg:
         'format data as a 10-bit binary int'
         return bin(0x10000 | self.data)[-10:]
 
+    #rwh
+    def format_016b(self):
+	'format data as a 16-bit binary int'
+	return bin(0x10000 | self.data)[-16:]
+
     def format_time_0875(self):
         'format data (scaled by 1/0.875) as time hh:mm:ss'
         if self.data<0:
@@ -1094,12 +1099,115 @@ class ProtoMcu(MnemBoard):
             name="s3uptime", 
             lname="Spartan3AN uptime (0.875s ticks)",
             fmt=Reg.format_time_0875)
+	
+	self.r0000 = self._newreg(
+            a=0x0000,
+            name="r0000",
+            lname="read-only register that should always read 0x0000",
+            fmt=Reg.format_04x)
+
+        self.rbeef = self._newreg(
+            a=0x0001,
+            name="rbeef",
+            lname="read-only register that should always read 0xbeef",
+            fmt=Reg.format_04x)
+
+        self.rdead = self._newreg(
+            a=0x0002,
+            name="rdead",
+            lname="read-only register that should always read 0xdead",
+            fmt=Reg.format_04x)
+
+	self.q0003 = self._newreg(
+            a=0x0003,
+            name="q0003",
+            lname="16-bit S3 R/W (needs better name & defn)",
+            fmt=Reg.format_04x)
+	
+	#The next four registers show whether each LED is always on.
+	#self.ledon_1 = self._newreg(
+	 #   a = 0x0004,
+	  #  name = "ledon_1",
+	   # lname="1-bit showing whether first LED is always on",
+	    #fmt = Reg.format_01b)
+#
+#	self.ledon_2 = self._newreg(
+#	    a = 0x0005,
+#	    name = "ledon_2",
+#	    lname = "1-bit showing whether the second LED is always on",
+#	    fmt = Reg.format_01b)
+#	
+#	self.ledon_3 = self._newreg(
+#	    a = 0x0006,
+#	    name = "ledon_3",
+#	    lname = "1-bit showing whether the third LED is always on",
+#	    fmt = Reg.format_01b)
+#
+#	self.ledon_4 = self._newreg(
+#	    a = 0x0007,
+#	    name = "ledon_4",
+#	    lname = "1-bit showing whether the fourth LED is always on",
+#	    fmt = Reg.format_01b)
+#
+#	self.ngood1 = self._newreg(
+#	    a = 0x0012,
+#	    name="ngood1",
+#	    lname = "First 16 bits of good counter",
+#	    fmt = Reg.format_04x)
+#
+#	self.ngood2 = self._newreg(
+#	    a = 0x0011,
+#	    name="ngood2",
+#	    lname = "Second 16 bits of good counter",
+#	    fmt = Reg.format_04x)
+#	
+#	self.ngood3 = self._newreg(
+#	    a = 0x0010,
+#	    name = "ngood3",
+#	    lname = "Third 16 bits of good counter",
+#	    fmt = Reg.format_04x)
+#	
+#	self.nbad1 = self._newreg(
+#	    a = 0x0015,
+#	    name = "nbad1",
+#	    lname = "First 16 bits of bad counter",
+#	    fmt = Reg.format_04x)
+#	
+#	self.nbad2 = self._newreg(
+#	    a = 0x0014,
+#	    name = "nbad2",
+#	    lname = "Second 16 bits of bad counter",
+#	    fmt = Reg.format_04x)
+#
+#	self.nbad3 = self._newreg(
+#	    a = 0x0015,
+#	    name = "nbad3",
+#	    lname = "Third 16 bits of bad counter",
+#	    fmt = Reg.format_04x)
+#
+        self.q0005 = self._newreg(
+            a=0x0005,
+            name="q0005",
+            lname="16-bit S3 R/W (needs better name & defn)",
+            fmt=Reg.format_04x)
 
         self.ncoinc = self._newreg(
             a=0x0503,
             name="ncoinc",
             lname="trigger coincidence count",
             fmt=Reg.format_d)
+	
+	self.btslp = self._newreg(
+	    a=0x000d,
+            name="btslp",
+            lname="contents of bitslip register",
+            fmt=Reg.format_016b)
+
+	self.lpbck = self._newreg(
+	    a=0x000c,
+	    name="lpbck",
+	    lname="whether counting or fixed and contents of register",
+	    fmt = Reg.format_05b)
 
         self.ntrig = self._newreg(
             a=0x0505,
