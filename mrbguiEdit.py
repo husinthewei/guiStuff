@@ -284,6 +284,7 @@ class MyPlotPanel(PlotPanel):
 class StatsPanel(wx.Panel):
     def __init__(self, parent, model, tabnum):
         self.updatelist = []
+	self.updatelistMF = []
         self.parent = parent
         self.m = model
         self.tabnum = tabnum
@@ -304,18 +305,13 @@ class StatsPanel(wx.Panel):
             self.updatelist.append((statictext, label, func))
         return statictext
 
-    #def AST4F(self, func=[], szr=None):
-	#label = "-"
-	#statictext = wx.StaticText(self, label = label)     
-	#if szr is None: szr = self.sizer
-	#szr.Add(statictext)
-
-	#label = "%s%s%s%s"
-	#self.updatelist.append((statictext,label,func[0]))
-	#self.updatelist.append((statictext,label,func[1]))
-	#self.updatelist.append((statictext,label,func[2]))
-	#self.updatelist.append((statictext,label,func[3]))
-	#return statictext
+    def ASTMF(self, func=[], szr=None):
+	label = "-"
+	statictext = wx.StaticText(self, label = label)     
+	if szr is None: szr = self.sizer
+	szr.Add(statictext)
+	self.updatelistMF.append((statictext,label,func))
+	return statictext
 
     def UpdateValues(self):
         for statictext,format,func in self.updatelist:
@@ -328,14 +324,34 @@ class StatsPanel(wx.Panel):
                 s = "?"
             statictext.SetLabel(s)
         self.Layout()
+
+    def UpdateValuesMF(self):
+        for statictext,format,func in self.updatelistMF:
+	    s = []
+	    for i in range(len(func)):
+                try:
+                    s.append(func[i]())
+                except socket.timeout:
+                    s.append("?")
+                except AssertionError:
+                    s.append("?")
+	
+	    label = ""
+	    for i in range(len(func)):
+	        label = label + s[i]
+	    statictext.SetLabel(label)
+        self.Layout()
+
     def OnPaint(self,e):
         print "  OnPaint"
+
     def OnTimer(self,e):
         if self.parent.GetSelection()!=self.tabnum:
             # don't update contents unless I'm the selected tab
             return
         self.UpdateValues()
-
+	self.UpdateValuesMF()
+    
 class BasicStatsPanel(StatsPanel):
     def __init__(self, parent, model, tabnum):
         StatsPanel.__init__(self, parent=parent, model=model, tabnum=tabnum)
@@ -386,7 +402,6 @@ class BasicStatsPanel(StatsPanel):
 #!According to the verilog, registers 4,5,6, and 7 control which LED's are always on
 #ngood, nbad
 
-#asdf
 class McuStatsPanel(StatsPanel):
     def __init__(self, parent, model, tabnum, whichmcu):
         StatsPanel.__init__(self, parent=parent, model=model, tabnum=tabnum)
@@ -402,16 +417,19 @@ class McuStatsPanel(StatsPanel):
 	self.AST("dead");		self.AST(func = mcu.rdead.rfmt);
 	self.AST("uptime");		self.AST(func = mcu.s3uptime.rfmt);
 	self.AST("q0003");		self.AST(func = mcu.q0003.rfmt);
-	self.AST("q0005");		self.AST(func = mcu.q0005.rfmt);
 	
 	#self.AST("LED On"); 		self.AST(mcu.ledon_1.rfmt);
-	#func = [mcu.ledon_1.rfmt, mcu.ledon_2.rfmt, mcu.ledon_3.rfmt, mcu.ledon_4.rfmt]
-	#self.AST("LED On"); 		self.AST4F(func = func);
+	funcs = [mcu.ledon_1.rfmt, mcu.ledon_2.rfmt, mcu.ledon_3.rfmt, mcu.ledon_4.rfmt]
+	self.AST("LED On"); 		self.ASTMF(func = funcs);
+	funcs1 = [mcu.ngood1.rfmt, mcu.ngood2.rfmt, mcu.ngood3.rfmt]
+	self.AST("ngood");		self.ASTMF(func = funcs1);
+	funcs2 = [mcu.nbad1.rfmt, mcu.nbad2.rfmt, mcu.nbad3.rfmt]
+	self.AST("nbad");		self.ASTMF(func = funcs2);
 
 	self.AST("bitslip");		self.AST(func = mcu.btslp.rfmt);
 	self.AST("loopback");		self.AST(func = mcu.lpbck.rfmt);	
-	self.AST("ncoinc");		self.AST(func = mcu.ncoinc);
-	self.AST("ntrig");		self.AST(func = mcu.ntrig);	
+	self.AST("ncoinc");		self.AST(func = mcu.ncoinc.rfmt);
+	self.AST("ntrig");		self.AST(func = mcu.ntrig.rfmt);	
 
 	self.SetSizer(self.sizer)
         self.timer = wx.Timer(self)

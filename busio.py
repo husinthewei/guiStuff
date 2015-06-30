@@ -1125,71 +1125,65 @@ class ProtoMcu(MnemBoard):
             fmt=Reg.format_04x)
 	
 	#The next four registers show whether each LED is always on.
-	#self.ledon_1 = self._newreg(
-	 #   a = 0x0004,
-	  #  name = "ledon_1",
-	   # lname="1-bit showing whether first LED is always on",
-	    #fmt = Reg.format_01b)
-#
-#	self.ledon_2 = self._newreg(
-#	    a = 0x0005,
-#	    name = "ledon_2",
-#	    lname = "1-bit showing whether the second LED is always on",
-#	    fmt = Reg.format_01b)
-#	
-#	self.ledon_3 = self._newreg(
-#	    a = 0x0006,
-#	    name = "ledon_3",
-#	    lname = "1-bit showing whether the third LED is always on",
-#	    fmt = Reg.format_01b)
-#
-#	self.ledon_4 = self._newreg(
-#	    a = 0x0007,
-#	    name = "ledon_4",
-#	    lname = "1-bit showing whether the fourth LED is always on",
-#	    fmt = Reg.format_01b)
-#
-#	self.ngood1 = self._newreg(
-#	    a = 0x0012,
-#	    name="ngood1",
-#	    lname = "First 16 bits of good counter",
-#	    fmt = Reg.format_04x)
-#
-#	self.ngood2 = self._newreg(
-#	    a = 0x0011,
-#	    name="ngood2",
-#	    lname = "Second 16 bits of good counter",
-#	    fmt = Reg.format_04x)
-#	
-#	self.ngood3 = self._newreg(
-#	    a = 0x0010,
-#	    name = "ngood3",
-#	    lname = "Third 16 bits of good counter",
-#	    fmt = Reg.format_04x)
-#	
-#	self.nbad1 = self._newreg(
-#	    a = 0x0015,
-#	    name = "nbad1",
-#	    lname = "First 16 bits of bad counter",
-#	    fmt = Reg.format_04x)
-#	
-#	self.nbad2 = self._newreg(
-#	    a = 0x0014,
-#	    name = "nbad2",
-#	    lname = "Second 16 bits of bad counter",
-#	    fmt = Reg.format_04x)
-#
-#	self.nbad3 = self._newreg(
-#	    a = 0x0015,
-#	    name = "nbad3",
-#	    lname = "Third 16 bits of bad counter",
-#	    fmt = Reg.format_04x)
-#
-        self.q0005 = self._newreg(
-            a=0x0005,
-            name="q0005",
-            lname="16-bit S3 R/W (needs better name & defn)",
-            fmt=Reg.format_04x)
+	self.ledon_1 = self._newreg(
+	    a = 0x0004,
+	    name = "ledon_1",
+	    lname="1-bit showing whether first LED is always on",
+	    fmt = Reg.format_01b)
+
+	self.ledon_2 = self._newreg(
+	    a = 0x0005,
+	    name = "ledon_2",
+	    lname = "1-bit showing whether the second LED is always on",
+	    fmt = Reg.format_01b)
+	
+	self.ledon_3 = self._newreg(
+	    a = 0x0006,
+	    name = "ledon_3",
+	    lname = "1-bit showing whether the third LED is always on",
+	    fmt = Reg.format_01b)
+
+	self.ledon_4 = self._newreg(
+	    a = 0x0007,
+	    name = "ledon_4",
+	    lname = "1-bit showing whether the fourth LED is always on",
+	    fmt = Reg.format_01b)
+
+	self.ngood1 = self._newreg(
+	    a = 0x0012,
+	    name="ngood1",
+	    lname = "First 16 bits of good counter",
+	    fmt = Reg.format_04x)
+
+	self.ngood2 = self._newreg(
+	    a = 0x0011,
+	    name="ngood2",
+	    lname = "Second 16 bits of good counter",
+	    fmt = Reg.format_04x)
+	
+	self.ngood3 = self._newreg(
+	    a = 0x0010,
+	    name = "ngood3",
+	    lname = "Third 16 bits of good counter",
+	    fmt = Reg.format_04x)
+	
+	self.nbad1 = self._newreg(
+	    a = 0x0015,
+	    name = "nbad1",
+	    lname = "First 16 bits of bad counter",
+	    fmt = Reg.format_04x)
+	
+	self.nbad2 = self._newreg(
+	    a = 0x0014,
+	    name = "nbad2",
+	    lname = "Second 16 bits of bad counter",
+	    fmt = Reg.format_04x)
+
+	self.nbad3 = self._newreg(
+	    a = 0x0013,
+	    name = "nbad3",
+	    lname = "Third 16 bits of bad counter",
+	    fmt = Reg.format_04x)
 
         self.ncoinc = self._newreg(
             a=0x0503,
