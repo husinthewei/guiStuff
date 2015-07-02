@@ -290,10 +290,11 @@ class StatsPanel(wx.Panel):
         self.tabnum = tabnum
         wx.Panel.__init__(self, parent=parent)
         self.sizer = None
-    def AST(self, label="", func=None, szr=None):
-        #if func and label:
-        #    label0 = label%("?")
-        if func:
+
+    def AST(self, label="", func=None, funcList = [], szr=None):
+        if func and label:
+            label0 = label%("?")
+        if func or funcList:
             label0 = "-"
         else:
             label0 = label
@@ -303,15 +304,9 @@ class StatsPanel(wx.Panel):
         if func:
             if not label: label = "%s"
             self.updatelist.append((statictext, label, func))
+	if funcList:
+	    self.updatelistMF.append((statictext,label,funcList))
         return statictext
-
-    def ASTMF(self, func=[], szr=None):
-	label = "-"
-	statictext = wx.StaticText(self, label = label)     
-	if szr is None: szr = self.sizer
-	szr.Add(statictext)
-	self.updatelistMF.append((statictext,label,func))
-	return statictext
 
     def UpdateValues(self):
         for statictext,format,func in self.updatelist:
@@ -420,11 +415,11 @@ class McuStatsPanel(StatsPanel):
 	
 	#self.AST("LED On"); 		self.AST(mcu.ledon_1.rfmt);
 	funcs = [mcu.ledon_1.rfmt, mcu.ledon_2.rfmt, mcu.ledon_3.rfmt, mcu.ledon_4.rfmt]
-	self.AST("LED On"); 		self.ASTMF(func = funcs);
+	self.AST("LED On"); 		self.AST(funcList = funcs);
 	funcs1 = [mcu.ngood1.rfmt, mcu.ngood2.rfmt, mcu.ngood3.rfmt]
-	self.AST("ngood");		self.ASTMF(func = funcs1);
+	self.AST("ngood");		self.AST(funcList = funcs1);
 	funcs2 = [mcu.nbad1.rfmt, mcu.nbad2.rfmt, mcu.nbad3.rfmt]
-	self.AST("nbad");		self.ASTMF(func = funcs2);
+	self.AST("nbad");		self.AST(funcList = funcs2);
 
 	self.AST("bitslip");		self.AST(func = mcu.btslp.rfmt);
 	self.AST("loopback");		self.AST(func = mcu.lpbck.rfmt);	
