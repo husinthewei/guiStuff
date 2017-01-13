@@ -1,0 +1,133 @@
+--- myproject/myproject.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v	2015-06-02 16:38:26.823090927 -0400
++++ src/hdl/design_1_wrapper.v	2015-06-02 16:18:40.741494267 -0400
+@@ -25,21 +25,37 @@
+     DDR_ras_n,
+     DDR_reset_n,
+     DDR_we_n,
+-    FCLK_CLK0,
++    //++wja++
++    // FCLK_CLK0,
++    //--wja--
+     FIXED_IO_ddr_vrn,
+     FIXED_IO_ddr_vrp,
+     FIXED_IO_mio,
+     FIXED_IO_ps_clk,
+     FIXED_IO_ps_porb,
+     FIXED_IO_ps_srstb,
+-    R3,
+-    R4,
+-    R5,
+-    R6,
+-    R7,
+-    reg0,
+-    reg1,
+-    reg2);
++    //++wja++
++    // R3,
++    // R4,
++    // R5,
++    // R6,
++    // R7,
++    // reg0,
++    // reg1,
++    // reg2
++    loopback_a_p, loopback_a_n,
++    loopback_b_p, loopback_b_n,
++    loopback_c_p, loopback_c_n,
++    loopback_clock_p, loopback_clock_n,
++    mcu_clock_p, mcu_clock_n,
++    mrb_0a_p, mrb_0a_n,
++    mrb_0b_p, mrb_0b_n,
++    mrb_0c_p, mrb_0c_n,
++    mrb_1a_p, mrb_1a_n,
++    mrb_1b_p, mrb_1b_n,
++    mrb_1c_p, mrb_1c_n,
++    test_led);
++    //--wja--
+   inout [14:0]DDR_addr;
+   inout [2:0]DDR_ba;
+   inout DDR_cas_n;
+@@ -55,21 +71,37 @@
+   inout DDR_ras_n;
+   inout DDR_reset_n;
+   inout DDR_we_n;
+-  output FCLK_CLK0;
++  //++wja++
++  // output FCLK_CLK0;
++  //--wja--
+   inout FIXED_IO_ddr_vrn;
+   inout FIXED_IO_ddr_vrp;
+   inout [53:0]FIXED_IO_mio;
+   inout FIXED_IO_ps_clk;
+   inout FIXED_IO_ps_porb;
+   inout FIXED_IO_ps_srstb;
+-  input [31:0]R3;
+-  input [31:0]R4;
+-  input [31:0]R5;
+-  input [31:0]R6;
+-  input [31:0]R7;
+-  output [31:0]reg0;
+-  output [31:0]reg1;
+-  output [31:0]reg2;
++  //++wja++
++  // input [31:0]R3;
++  // input [31:0]R4;
++  // input [31:0]R5;
++  // input [31:0]R6;
++  // input [31:0]R7;
++  // output [31:0]reg0;
++  // output [31:0]reg1;
++  // output [31:0]reg2;
++  output loopback_a_p, loopback_a_n;
++  output loopback_b_p, loopback_b_n;
++  input  loopback_c_p, loopback_c_n;
++  input  loopback_clock_p, loopback_clock_n;
++  input  mcu_clock_p, mcu_clock_n;
++  input  mrb_0a_p, mrb_0a_n;
++  input  mrb_0b_p, mrb_0b_n;
++  output mrb_0c_p, mrb_0c_n;
++  input  mrb_1a_p, mrb_1a_n;
++  input  mrb_1b_p, mrb_1b_n;
++  output mrb_1c_p, mrb_1c_n;
++  output [3:0] test_led;
++  //--wja--
+ 
+   wire [14:0]DDR_addr;
+   wire [2:0]DDR_ba;
+@@ -101,6 +133,36 @@
+   wire [31:0]reg0;
+   wire [31:0]reg1;
+   wire [31:0]reg2;
++  //++wja++
++  wire loopback_a_p, loopback_a_n;
++  wire loopback_b_p, loopback_b_n;
++  wire loopback_c_p, loopback_c_n;
++  wire loopback_clock_p, loopback_clock_n;
++  wire mcu_clock_p, mcu_clock_n;
++  wire mrb_0a_p, mrb_0a_n;
++  wire mrb_0b_p, mrb_0b_n;
++  wire mrb_0c_p, mrb_0c_n;
++  wire mrb_1a_p, mrb_1a_n;
++  wire mrb_1b_p, mrb_1b_n;
++  wire mrb_1c_p, mrb_1c_n;
++  wire [3:0] test_led;
++  
++  myverilog mv
++    (.clk(FCLK_CLK0), .led(test_led),
++     .loopback_a_p(loopback_a_p), .loopback_a_n(loopback_a_n), 
++     .loopback_b_p(loopback_b_p), .loopback_b_n(loopback_b_n), 
++     .loopback_c_p(loopback_c_p), .loopback_c_n(loopback_c_n),
++     .loopback_clock_p(loopback_clock_p), .loopback_clock_n(loopback_clock_n),
++     .mcu_clock_p(mcu_clock_p), .mcu_clock_n(mcu_clock_n),
++     .mrb_0a_p(mrb_0a_p), .mrb_0a_n(mrb_0a_n), 
++     .mrb_0b_p(mrb_0b_p), .mrb_0b_n(mrb_0b_n), 
++     .mrb_0c_p(mrb_0c_p), .mrb_0c_n(mrb_0c_n),
++     .mrb_1a_p(mrb_1a_p), .mrb_1a_n(mrb_1a_n), 
++     .mrb_1b_p(mrb_1b_p), .mrb_1b_n(mrb_1b_n), 
++     .mrb_1c_p(mrb_1c_p), .mrb_1c_n(mrb_1c_n),  
++     .r0(reg0), .r1(reg1), .r2(reg2), 
++     .r3(R3), .r4(R4), .r5(R5), .r6(R6), .r7(R7));
++  //--wja--
+ 
+   design_1 design_1_i
+        (.DDR_addr(DDR_addr),
